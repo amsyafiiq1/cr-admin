@@ -1,0 +1,29 @@
+<div class="flex w-screen h-screen">
+  <div class="h-full w-1/2 bg-neutral md:block hidden"></div>
+  <div
+    class="h-full w-full md:w-1/2 flex flex-col justify-center items-center gap-4"
+  >
+    <h3 class="font-semibold text-2xl max-w-lg">Welcome Back !</h3>
+    <p class="max-w-lg">Enter your email and password below to continue</p>
+    <form [formGroup]="form" class="w-full max-w-lg px-8 flex flex-col gap-2">
+      <input
+        type="text"
+        placeholder="Email"
+        class="input input-bordered w-full"
+        formControlName="email"
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        class="input input-bordered w-full"
+        formControlName="password"
+      />
+      <button class="btn w-full" (click)="onSubmit()">Log In</button>
+    </form>
+    <p class="max-w-sm text-center">
+      By clicking continue, you agree to our
+      <a class="link link-info">Terms of Service</a> and
+      <a class="link link-info">Privacy Policy</a>.
+    </p>
+  </div>
+</div>

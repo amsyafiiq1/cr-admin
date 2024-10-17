@@ -1,0 +1,3 @@
+<p>Welcome {{ authStore.user()?.username ?? authStore.user()?.email }}</p>
+
+<button class="btn btn-primary" (click)="logout()">Sign Out</button>

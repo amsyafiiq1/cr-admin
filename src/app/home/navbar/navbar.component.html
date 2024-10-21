@@ -1,0 +1,22 @@
+<div
+  class="w-80 fixed top-0 left-0 h-screen p-4 border-white/10 border-r flex flex-col"
+>
+  <div id="icon" class="p-4 font-semibold font-mono">
+    CAMPUS RUNNER<br />
+    <p class="text-xs">ADMINISTRATION SYSTEM</p>
+  </div>
+  <div id="button-container" class="">
+    <ul class="menu">
+      @for(menu of menuList; track menu) {
+      <li>
+        <a
+          routerLink="{{ menu.link }}"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: false }"
+          ><i class="{{ menu.icon }}"></i> {{ menu.title }}</a
+        >
+      </li>
+      }
+    </ul>
+  </div>
+</div>

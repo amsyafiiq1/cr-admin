@@ -27,6 +27,7 @@ export class AppComponent {
 
   // ngOnInit() {
   //   this.authService.supabase.auth.onAuthStateChange((event, session) => {
+  //     console.log(event, session);
   //     if (event === 'SIGNED_IN') {
   //       console.log(
   //         session?.user.email,

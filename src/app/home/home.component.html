@@ -2,8 +2,6 @@
 <app-navbar />
 
 <div class="fixed top-16 left-80 p-4">
-  <router-outlet />
   <p>Welcome {{ authStore.user()?.username ?? authStore.user()?.email }}</p>
-
-  <button class="btn btn-primary" (click)="logout()">Sign Out</button>
+  <router-outlet />
 </div>

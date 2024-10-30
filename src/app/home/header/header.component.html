@@ -2,5 +2,30 @@
   class="fixed top-0 left-80 min-h-16 max-h-16 flex items-center px-4 justify-between w-[calc(100%-20rem)]"
 >
   <div class="bg-blue-300 h-full text-black">text here</div>
-  <div class="bg-blue-200 h-full text-black">text here</div>
+  <div class="dropdown dropdown-end">
+    <div class="btn m-1 btn-neutral btn-circle" tabindex="0" role="button">
+      <div class="avatar placeholder">
+        <div>
+          <span class="font-semibold">AS</span>
+        </div>
+      </div>
+    </div>
+    <ul
+      tabindex="0"
+      class="dropdown-content menu bg-base-100 z-[1] w-52 p-2 shadow border border-white/10 rounded-md"
+    >
+      <li>
+        <a>
+          <i class="bi bi-gear-fill text-warning"></i>
+          Settings
+        </a>
+      </li>
+      <li>
+        <button (click)="logout()">
+          <i class="bi bi-box-arrow-in-left text-error"></i>
+          Sign Out
+        </button>
+      </li>
+    </ul>
+  </div>
 </div>

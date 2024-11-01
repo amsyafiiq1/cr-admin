@@ -3,7 +3,7 @@
 >
   <div class="bg-blue-300 h-full text-black">text here</div>
   <div class="dropdown dropdown-end">
-    <div class="btn m-1 btn-neutral btn-circle" tabindex="0" role="button">
+    <div class="btn btn-neutral btn-circle" tabindex="0" role="button">
       <div class="avatar placeholder">
         <div>
           <span class="font-semibold">AS</span>
@@ -12,13 +12,13 @@
     </div>
     <ul
       tabindex="0"
-      class="dropdown-content menu bg-base-100 z-[1] w-52 p-2 shadow border border-white/10 rounded-md"
+      class="dropdown-content menu bg-base-100 z-[1] w-52 p-2 shadow-lg border border-white/10 rounded-md"
     >
       <li>
-        <a>
+        <button>
           <i class="bi bi-gear-fill text-warning"></i>
           Settings
-        </a>
+        </button>
       </li>
       <li>
         <button (click)="logout()">

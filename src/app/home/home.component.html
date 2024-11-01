@@ -1,7 +1,6 @@
 <app-header />
 <app-navbar />
 
-<div class="fixed top-16 left-80 p-4">
-  <p>Welcome {{ authStore.user()?.username ?? authStore.user()?.email }}</p>
+<div class="fixed top-16 left-80 p-4 w-[calc(100%-20rem)] -z-10">
   <router-outlet />
 </div>

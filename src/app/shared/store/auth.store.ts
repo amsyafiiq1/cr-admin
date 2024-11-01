@@ -13,6 +13,7 @@ import { catchError, EMPTY, pipe, switchMap, tap } from 'rxjs';
 export interface User {
   email: string;
   username: string;
+  token?: string;
 }
 
 type AuthState = {
@@ -92,13 +93,18 @@ export const AuthStore = signalStore(
   withHooks({
     onInit: (store, authService = inject(AuthService)) => {
       authService.supabase.auth.onAuthStateChange((event, session) => {
-        console.log(event, session);
         if (event === 'SIGNED_IN') {
+          if (store.user()?.email === session?.user.email) {
+            return;
+          }
+
+          console.log(event, session);
           patchState(store, {
             user: {
               email: session?.user.email!,
               username:
                 session?.user.identities?.at(0)?.identity_data?.['username']!,
+              token: session?.access_token!,
             },
           });
         } else if (event === 'SIGNED_OUT') {

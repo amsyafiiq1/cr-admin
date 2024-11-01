@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../shared/service/auth.service';
@@ -21,6 +21,14 @@ export class LoginComponent {
     email: ['', Validators.required],
     password: ['', Validators.required],
   });
+
+  constructor() {
+    effect(() => {
+      if (this.authStore.user()) {
+        this.router.navigate(['/']);
+      }
+    });
+  }
 
   onSubmit() {
     const rawForm = this.form.getRawValue();

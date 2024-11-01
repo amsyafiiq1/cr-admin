@@ -15,24 +15,16 @@ export class AppComponent {
   router = inject(Router);
   authStore = inject(AuthStore);
 
-  constructor() {
-    effect(() => {
-      if (this.authStore.user()) {
-        this.router.navigate(['/']);
-      } else {
-        this.router.navigate(['/login']);
-      }
-    });
-  }
+  constructor() {}
 
   // ngOnInit() {
   //   this.authService.supabase.auth.onAuthStateChange((event, session) => {
-  //     console.log(event, session);
   //     if (event === 'SIGNED_IN') {
-  //       console.log(
-  //         session?.user.email,
-  //         session?.user.identities?.at(0)?.identity_data?.['usename']
-  //       );
+  //       if (this.authStore.user()?.token === session?.access_token) {
+  //         return;
+  //       }
+  //       console.log(event, session);
+
   //       this.router.navigate(['/']);
   //     } else if (event === 'SIGNED_OUT') {
   //       this.router.navigate(['/login']);

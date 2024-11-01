@@ -1,9 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { AuthService } from '../shared/service/auth.service';
 import { AuthStore } from '../shared/store/auth.store';
 import { HeaderComponent } from './header/header.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -15,6 +15,15 @@ import { RouterOutlet } from '@angular/router';
 export class HomeComponent {
   authService = inject(AuthService);
   authStore = inject(AuthStore);
+  router = inject(Router);
+
+  constructor() {
+    effect(() => {
+      if (!this.authStore.user()) {
+        this.router.navigate(['/login']);
+      }
+    });
+  }
 
   logout() {
     this.authStore.logout();

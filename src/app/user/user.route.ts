@@ -10,7 +10,7 @@ const AddUserRoute: Route = {
   path: 'user/add',
   title: 'Add User',
   loadComponent: () =>
-    import('./add/add.component').then((m) => m.AddComponent),
+    import('./add-user/add-user.component').then((m) => m.AddComponent),
 };
 
 export const UserRoutes: Route[] = [UserRoute, AddUserRoute];

@@ -1,0 +1,64 @@
+<div role="tablist" class="flex flex-col relative items-start">
+  <input
+    type="radio"
+    name="my_tabs_1"
+    role="tab"
+    class="tab"
+    aria-label="Account Information"
+    checked
+  />
+  <div role="tabpanel" class="tab-content">
+    <div class="w-full flex flex-between">
+      <div class="w-full">
+        <div>
+          <div class="label">
+            <span class="label-text">Email</span>
+          </div>
+          <input type="text" class="input input-bordered w-[36rem] input-sm" />
+        </div>
+        <div>
+          <div class="label">
+            <span class="label-text">Password</span>
+          </div>
+          <div
+            class="input input-bordered w-[36rem] input-sm flex justify-between"
+          >
+            <input type="password" id="password" class="grow w-full" />
+            <label class="swap">
+              <input type="checkbox" (click)="passwordShow()" />
+
+              <i class="bi bi-eye swap-on fill-current"></i>
+              <i class="bi bi-eye-slash swap-off fill-current"></i>
+            </label>
+          </div>
+          <div class="label">
+            <span class="label-text-alt text-error" hidden
+              >Password should be more than 8 words</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="p-4 mr-16">
+        <p class="text-center font-semibold mb-2">Profile Picture</p>
+        <div class="avatar overflow-visible placeholder">
+          <div class="bg-neutral text-neutral-content w-40 rounded-full">
+            <span class="text-xl">Your Picture</span>
+          </div>
+          <button class="btn btn-outline btn-sm absolute bottom-0">
+            <i class="bi bi-pencil"></i>
+            Edit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <input
+    type="radio"
+    name="my_tabs_1"
+    role="tab "
+    class="tab"
+    aria-label="User Information"
+  />
+  <div role="tabpanel" class="tab-content p-10">Tab content 2</div>
+</div>

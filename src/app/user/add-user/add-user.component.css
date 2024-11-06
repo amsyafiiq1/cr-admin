@@ -1,0 +1,11 @@
+.tab-content {
+    @apply absolute left-[18rem]  mx-4 w-[calc(100%-18rem)]
+}
+
+.tab:is(.tab-active, [aria-selected="true"]):not(.tab-disabled):not([disabled]), .tab:is(input:checked) {
+    @apply bg-neutral border-l-2
+}
+
+.tab {
+    @apply hover:bg-neutral-content/[0.1] !w-64 !justify-start border-l-2 border-transparent
+}

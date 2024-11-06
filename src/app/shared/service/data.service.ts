@@ -6,7 +6,7 @@ import { from, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class DataService {
   private supabase = createClient(
     environment.supabaseUrl,
     environment.supabaseKey

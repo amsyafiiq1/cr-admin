@@ -1,64 +1,205 @@
-<div role="tablist" class="flex flex-col relative items-start">
-  <input
-    type="radio"
-    name="my_tabs_1"
-    role="tab"
-    class="tab"
-    aria-label="Account Information"
-    checked
-  />
-  <div role="tabpanel" class="tab-content">
-    <div class="w-full flex flex-between">
-      <div class="w-full">
-        <div>
-          <div class="label">
-            <span class="label-text">Email</span>
+<form [formGroup]="form">
+  <div role="tablist" class="flex flex-col relative items-start">
+    <input
+      type="radio"
+      name="my_tabs_1"
+      role="tab"
+      class="tab"
+      aria-label="Account Information"
+      id="1"
+      checked
+    />
+    <div role="tabpanel" class="tab-content">
+      <div class="w-full flex flex-between gap-10">
+        <div class="w-full">
+          <div>
+            <div class="label">
+              <span class="label-text">Email</span>
+            </div>
+            <input
+              type="text"
+              class="input input-bordered w-full max-w-[60rem] input-sm"
+              formControlName="email"
+              [ngClass]="{
+                'input-error':
+                  form.get('email')!.invalid && form.get('email')!.touched
+              }"
+            />
           </div>
-          <input type="text" class="input input-bordered w-[36rem] input-sm" />
-        </div>
-        <div>
-          <div class="label">
-            <span class="label-text">Password</span>
-          </div>
-          <div
-            class="input input-bordered w-[36rem] input-sm flex justify-between"
-          >
-            <input type="password" id="password" class="grow w-full" />
-            <label class="swap">
-              <input type="checkbox" (click)="passwordShow()" />
-
-              <i class="bi bi-eye swap-on fill-current"></i>
-              <i class="bi bi-eye-slash swap-off fill-current"></i>
-            </label>
-          </div>
-          <div class="label">
-            <span class="label-text-alt text-error" hidden
-              >Password should be more than 8 words</span
+          <div>
+            <div class="label">
+              <span class="label-text">Password</span>
+            </div>
+            <div
+              class="input input-bordered w-full max-w-[60rem] input-sm flex justify-between"
+              [ngClass]="{
+                'input-error':
+                  form.get('password')!.invalid && form.get('password')!.touched
+              }"
             >
+              <input
+                type="password"
+                id="password"
+                class="grow w-full"
+                formControlName="password"
+              />
+              <label class="swap">
+                <input type="checkbox" (click)="passwordShow()" />
+
+                <i class="bi bi-eye swap-on fill-current"></i>
+                <i class="bi bi-eye-slash swap-off fill-current"></i>
+              </label>
+            </div>
+
+            @if (form.get('password')!.invalid && form.get('password')!.touched)
+            {
+            <div class="label">
+              <span class="label-text-alt text-error"
+                ><i class="bi bi-exclamation-circle"></i>&nbsp;Password should
+                be more than 8 character</span
+              >
+            </div>
+            }
+          </div>
+          <div>
+            <div class="label">
+              <span class="label-text">User Type</span>
+            </div>
+            <select
+              class="select select-bordered w-full max-w-[60rem] select-sm"
+              formControlName="type"
+              [ngClass]="{
+                'input-error':
+                  form.get('type')!.invalid && form.get('type')!.touched
+              }"
+            >
+              <option>Administrator</option>
+              <option>Runner</option>
+              <option>Customer</option>
+            </select>
+          </div>
+          <div class="flex w-full max-w-[60rem] justify-end pt-6 gap-4">
+            <button class="btn btn-outline" (click)="goToTab('2')">Next</button>
           </div>
         </div>
-      </div>
-      <div class="p-4 mr-16">
-        <p class="text-center font-semibold mb-2">Profile Picture</p>
-        <div class="avatar overflow-visible placeholder">
-          <div class="bg-neutral text-neutral-content w-40 rounded-full">
-            <span class="text-xl">Your Picture</span>
+        <div class="p-4 mr-16">
+          <p class="text-center font-semibold mb-2">Profile Picture</p>
+
+          <div class="avatar overflow-visible placeholder">
+            <div
+              class="bg-neutral text-neutral-content w-40 rounded-full block"
+              id="placeholder"
+              [ngClass]="{ '!hidden': isImageSet === true }"
+            >
+              <span class="text-xl">Your Picture</span>
+            </div>
+            <div
+              class="w-40 rounded-full"
+              [ngClass]="{ '!hidden': isImageSet === false }"
+            >
+              <img id="image" />
+            </div>
+            <input
+              type="file"
+              class="absolute bottom-0 file-input file-input-bordered w-full file-input-sm"
+              accept="image/*"
+              (change)="onFileSelected($event)"
+              #fileUpload
+              id="fileUpload"
+            />
+            <dialog id="my_modal_2" class="modal modal-bottom md:modal-middle">
+              <div class="modal-box">
+                <h3 class="text-lg font-bold text-warning">Warning !</h3>
+                <p class="py-4">Image size should not be more than 5mb</p>
+              </div>
+              <form method="dialog" class="modal-backdrop">
+                <button>close</button>
+              </form>
+            </dialog>
           </div>
-          <button class="btn btn-outline btn-sm absolute bottom-0">
-            <i class="bi bi-pencil"></i>
-            Edit
-          </button>
         </div>
       </div>
     </div>
-  </div>
 
-  <input
-    type="radio"
-    name="my_tabs_1"
-    role="tab "
-    class="tab"
-    aria-label="User Information"
-  />
-  <div role="tabpanel" class="tab-content p-10">Tab content 2</div>
-</div>
+    <input
+      type="radio"
+      name="my_tabs_1"
+      role="tab"
+      class="tab"
+      aria-label="User Information"
+      id="2"
+    />
+    <div role="tabpanel" class="tab-content">
+      <div class="w-full flex flex-between gap-10">
+        <div class="w-full">
+          <!-- left side -->
+          <div>
+            <div class="label">
+              <span class="label-text">UiTM ID</span>
+            </div>
+            <input
+              type="text"
+              class="input input-bordered w-full max-w-[60rem] input-sm"
+              formControlName="id"
+              pKeyFilter="num"
+              [ngClass]="{
+                'input-error':
+                  form.get('id')!.invalid && form.get('id')!.touched
+              }"
+            />
+            <div class="label w-full max-w-[60rem]">
+              @if(form.get('id')!.invalid && form.get('id')!.touched) {
+              <span class="label-text-alt text-error"
+                ><i class="bi bi-exclamation-circle"></i>&nbsp;ID is
+                required</span
+              >
+              }
+              <span class="label-text-alt text-info"
+                ><i class="bi bi-info-circle"></i>&nbsp;Staff or Student
+                ID</span
+              >
+            </div>
+          </div>
+          <div>
+            <div class="label">
+              <span class="label-text">Fullname</span>
+            </div>
+            <input
+              type="text"
+              class="input input-bordered w-full max-w-[60rem] input-sm"
+              formControlName="name"
+              [ngClass]="{
+                'input-error':
+                  form.get('name')!.invalid && form.get('name')!.touched
+              }"
+            />
+          </div>
+          <div>
+            <div class="label">
+              <span class="label-text">Contact Number</span>
+            </div>
+            <input
+              type="text"
+              class="input input-bordered w-full max-w-[60rem] input-sm"
+              formControlName="phone"
+              pKeyFilter="num"
+              [ngClass]="{
+                'input-error':
+                  form.get('phone')!.invalid && form.get('phone')!.touched
+              }"
+            />
+          </div>
+          <div class="flex w-full justify-end pt-6 gap-4 max-w-[60rem]">
+            <button class="btn btn-outline" (click)="goToTab('1')">
+              Previous
+            </button>
+            <button class="btn btn-primary" (click)="submit()">Submit</button>
+          </div>
+        </div>
+
+        <!-- right side if needed -->
+        <div class="p-4 mr-16"></div>
+      </div>
+    </div>
+  </div>
+</form>

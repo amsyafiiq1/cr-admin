@@ -10,14 +10,19 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { AuthService } from '../service/auth.service';
 import { catchError, EMPTY, pipe, switchMap, tap } from 'rxjs';
 
-export interface User {
+export interface AuthUser {
+  uuid: string;
+  uitmId: string;
   email: string;
-  username: string;
+  name: string;
+  phone: string;
+  type: 'Administrator' | 'User' | 'Runner';
+  photo?: string;
   token?: string;
 }
 
 type AuthState = {
-  user: User | null;
+  user: AuthUser | null;
 };
 
 const initialState: AuthState = {
@@ -28,34 +33,6 @@ export const AuthStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withMethods((store, authService = inject(AuthService)) => ({
-    register: rxMethod<{ username: string; email: string; password: string }>(
-      pipe(
-        tap(() => patchState(store, { user: null })),
-        switchMap(({ username, email, password }) =>
-          authService.register(username, email, password).pipe(
-            tap((result) => {
-              if (result.error) {
-                alert(result.error);
-              } else {
-                patchState(store, {
-                  user: {
-                    email: result.data.user?.email!,
-                    username:
-                      result.data.user?.identities?.at(0)?.identity_data?.[
-                        'username'
-                      ]!,
-                  },
-                });
-              }
-            })
-          )
-        ),
-        catchError((error) => {
-          alert(error);
-          return EMPTY;
-        })
-      )
-    ),
     login: rxMethod<{ email: string; password: string }>(
       pipe(
         tap(() => patchState(store, { user: null })),
@@ -65,15 +42,21 @@ export const AuthStore = signalStore(
               if (result.error) {
                 alert(result.error);
               } else {
-                patchState(store, {
-                  user: {
-                    email: result.data.user?.email!,
-                    username:
-                      result.data.user?.identities?.at(0)?.identity_data?.[
-                        'username'
-                      ]!,
-                  },
-                });
+                authService.getUserFromUUID(result.data.user?.id!).pipe(
+                  tap((user) => {
+                    patchState(store, {
+                      user: {
+                        email: result.data.user?.email!,
+                        name: user?.name!,
+                        uuid: user?.supabase_uuid!,
+                        uitmId: user?.id!,
+                        type: user?.type!,
+                        phone: user?.phone!,
+                        photo: (user?.photo as string) ?? undefined,
+                      },
+                    });
+                  })
+                );
               }
             })
           )
@@ -84,7 +67,7 @@ export const AuthStore = signalStore(
         })
       )
     ),
-    setUser: (user: User) => patchState(store, { user }),
+    setUser: (user: AuthUser) => patchState(store, { user }),
     logout: () => {
       authService.logout();
       patchState(store, { user: null });
@@ -94,18 +77,23 @@ export const AuthStore = signalStore(
     onInit: (store, authService = inject(AuthService)) => {
       authService.supabase.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_IN') {
+          console.log(store.user(), session);
           if (store.user()?.email === session?.user.email) {
             return;
           }
 
-          console.log(event, session);
-          patchState(store, {
-            user: {
-              email: session?.user.email!,
-              username:
-                session?.user.identities?.at(0)?.identity_data?.['username']!,
-              token: session?.access_token!,
-            },
+          authService.getUserFromUUID(session?.user.id!).subscribe((user) => {
+            patchState(store, {
+              user: {
+                email: session?.user.email!,
+                name: user?.name!,
+                uuid: user?.supabase_uuid!,
+                uitmId: user?.id!,
+                type: user?.type!,
+                phone: user?.phone!,
+                photo: (user?.photo as string) ?? undefined,
+              },
+            });
           });
         } else if (event === 'SIGNED_OUT') {
           patchState(store, { user: null });

@@ -21,6 +21,8 @@
     "@ngrx/signals": "^18.1.0",
     "@supabase/supabase-js": "^2.45.4",
     "bootstrap-icons": "^1.11.3",
+    "ng-file-upload": "^12.2.13",
+    "primeng": "^17.18.12",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"
@@ -43,9 +45,8 @@
     "typescript": "~5.5.2"
   },
   "overrides": {
-  "@supabase/supabase-js": {
-    "@supabase/auth-js": "2.61.0"
+    "@supabase/supabase-js": {
+      "@supabase/auth-js": "2.61.0"
+    }
   }
-}
-
 }

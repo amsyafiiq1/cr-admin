@@ -19,11 +19,18 @@ export class HomeComponent {
 
   constructor() {
     effect(() => {
-      if (!this.authStore.user()) {
-        this.router.navigate(['/login']);
-      }
+      this.authService.supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN') {
+          console.log('User signed in');
+          if (!this.authStore.user()) {
+            this.router.navigate(['/login']);
+          }
+        }
+      });
     });
   }
+
+  ngOnInit() {}
 
   logout() {
     this.authStore.logout();

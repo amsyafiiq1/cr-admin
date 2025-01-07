@@ -1,10 +1,10 @@
 <div class="flex justify-between w-full mb-3">
   <div class="">
-    <input
+    <!-- <input
       type="text"
       placeholder="Filter users..."
       class="input input-bordered input-sm rounded-md min-w-64"
-    />
+    /> -->
   </div>
   <div>
     <div class="dropdown dropdown-end">
@@ -33,23 +33,43 @@
     <thead>
       <th class="max-w-4">#</th>
       <th class="min-w-64">Full Name</th>
-      <th>Email</th>
       <th>Phone No.</th>
-      <th class="w-4"></th>
+      <th>On Duty</th>
+      <th>Status</th>
     </thead>
     <tbody>
-      @for(user of userStore.users(); track user) {
-      <tr>
+      @for(runner of runners(); track runner) {
+      <tr class="hover hover:cursor-pointer">
         <td>#</td>
-        <td>{{ user.name }}</td>
+        <td>{{ runner.user.name }}</td>
         <td>
-          <p>{{ user.email }}</p>
+          <p>{{ runner.user.phone }}</p>
         </td>
-        <td>{{ user.phone }}</td>
         <td>
-          <button class="btn btn-ghost btn-sm rounded-md">
-            <i class="bi bi-three-dots"></i>
-          </button>
+          <div
+            class="badge badge-lg"
+            [ngClass]="runner.isOnDuty ? 'badge-success' : 'badge-error'"
+          >
+            {{ runner.isOnDuty ? "Yes" : "No" }}
+          </div>
+        </td>
+        <td>
+          <div
+            class="badge badge-lg"
+            [ngClass]="
+              runner.status === 'Unverified'
+                ? 'badge-warning'
+                : runner.status === 'Verified'
+                ? 'badge-success'
+                : runner.status === 'Rejected'
+                ? 'badge-error'
+                : runner.status === 'Suspended'
+                ? 'badge-error'
+                : 'badge-error'
+            "
+          >
+            {{ runner.status }}
+          </div>
         </td>
       </tr>
       }

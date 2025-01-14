@@ -24,7 +24,10 @@ export class LoginComponent {
 
   constructor() {
     effect(() => {
-      if (this.authStore.user()) {
+      if (this.authStore.signed() === 'init') {
+        return;
+      }
+      if (this.authStore.signed()) {
         this.router.navigate(['/']);
       }
     });

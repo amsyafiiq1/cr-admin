@@ -1,5 +1,6 @@
 <form [formGroup]="form">
   <div role="tablist" class="flex flex-col relative items-start">
+    <!-- first tab -->
     <input
       type="radio"
       name="my_tabs_1"
@@ -121,6 +122,7 @@
       </div>
     </div>
 
+    <!-- second tab -->
     <input
       type="radio"
       name="my_tabs_1"
@@ -199,6 +201,54 @@
 
         <!-- right side if needed -->
         <div class="p-4 mr-16"></div>
+      </div>
+    </div>
+
+    <!-- third tab -->
+    @if (form.get('type')!.value === 'Runner') {
+    <input
+      type="radio"
+      name="my_tabs_1"
+      role="tab"
+      class="tab"
+      aria-label="Runner Information"
+      id="2"
+    />
+    }
+    <div class="tab-content" role="tabpanel">
+      <div class="w-full flex flex-between gap-10">
+        <div class="w-full">
+          <!-- left side -->
+          <div>
+            <div class="label">
+              <span class="label-text">Vehicle Type</span>
+            </div>
+            <select
+              class="select select-bordered w-full max-w-[60rem] select-sm"
+              formControlName="vehicle"
+              [ngClass]="{
+                'input-error':
+                  form.get('type')!.invalid && form.get('type')!.touched
+              }"
+            >
+              @for(type of vehicleTypes(); track type.id) {
+              <option [value]="type.id">{{ type.name }}</option>
+              }
+            </select>
+          </div>
+          <div class="label">
+            <span class="label-text">Vehicle Plate Number</span>
+          </div>
+          <input
+            type="text"
+            class="input input-bordered w-full max-w-[60rem] input-sm"
+            formControlName="plate"
+            [ngClass]="{
+              'input-error':
+                form.get('plate')!.invalid && form.get('plate')!.touched
+            }"
+          />
+        </div>
       </div>
     </div>
   </div>

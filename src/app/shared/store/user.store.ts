@@ -42,7 +42,7 @@ export const UserStore = signalStore(
       userService = inject(UserService),
       avatarService = inject(AvatarService)
     ) => ({
-      addUser: rxMethod<User>(
+      addUser: rxMethod<any>(
         pipe(
           switchMap((user) =>
             userService.register(user).pipe(

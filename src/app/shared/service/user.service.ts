@@ -20,7 +20,7 @@ export class UserService {
     return from(promise);
   }
 
-  saveUser(user: User): Observable<User> {
+  saveUser(user: any): Observable<User> {
     const promise = this.supabase
       .from('User')
       .insert([
@@ -66,17 +66,29 @@ export class UserService {
     );
   }
 
-  async savePerRole(user: User) {
+  async savePerRole(user: any) {
     if (user.type === 'Administrator') {
       const { data, error } = await this.supabase.from('Admin').insert({
         id: user.id,
       });
     } else if (user.type === 'Runner') {
       console.log('Runner');
-      const { data, error } = await this.supabase.from('Runner').insert({
+      const { data, error } = await this.supabase
+        .from('Vehicle_Details')
+        .insert({
+          type_id: user.vehicle,
+          plate_no: user.plate,
+        })
+        .select()
+        .single();
+
+      console.log(data, error);
+
+      await this.supabase.from('Runner').insert({
         id: user.id,
-        status: 'Pending',
+        status: 'Unverified',
         isOnDuty: false,
+        vehicle_id: data.id,
       });
     } else {
       const { data, error } = await this.supabase.from('Customer').insert({

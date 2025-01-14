@@ -23,10 +23,12 @@ export interface AuthUser {
 
 type AuthState = {
   user: AuthUser | null;
+  signed: 'init' | boolean;
 };
 
 const initialState: AuthState = {
   user: null,
+  signed: 'init',
 };
 
 export const AuthStore = signalStore(
@@ -54,6 +56,7 @@ export const AuthStore = signalStore(
                         phone: user?.phone!,
                         photo: (user?.photo as string) ?? undefined,
                       },
+                      signed: true,
                     });
                   })
                 );
@@ -70,14 +73,14 @@ export const AuthStore = signalStore(
     setUser: (user: AuthUser) => patchState(store, { user }),
     logout: () => {
       authService.logout();
-      patchState(store, { user: null });
+      patchState(store, { user: null, signed: false });
     },
   })),
   withHooks({
     onInit: (store, authService = inject(AuthService)) => {
       authService.supabase.auth.onAuthStateChange((event, session) => {
+        console.log(store.signed(), session, event);
         if (event === 'SIGNED_IN') {
-          console.log(store.user(), session);
           if (store.user()?.email === session?.user.email) {
             return;
           }
@@ -93,10 +96,13 @@ export const AuthStore = signalStore(
                 phone: user?.phone!,
                 photo: (user?.photo as string) ?? undefined,
               },
+              signed: true,
             });
           });
         } else if (event === 'SIGNED_OUT') {
-          patchState(store, { user: null });
+          patchState(store, { user: null, signed: false });
+        } else {
+          patchState(store, { user: null, signed: false });
         }
       });
     },

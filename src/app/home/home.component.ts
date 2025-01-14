@@ -18,15 +18,10 @@ export class HomeComponent {
   router = inject(Router);
 
   constructor() {
-    effect(() => {
-      this.authService.supabase.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_IN') {
-          console.log('User signed in');
-          if (!this.authStore.user()) {
-            this.router.navigate(['/login']);
-          }
-        }
-      });
+    this.authService.supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        this.router.navigate(['/login']);
+      }
     });
   }
 

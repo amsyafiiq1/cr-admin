@@ -7,7 +7,14 @@ import {
   signal,
   ViewChild,
 } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { FileUploadModule } from 'primeng/fileupload';
 import { AvatarService } from '../../shared/service/avatar.service';
@@ -16,6 +23,8 @@ import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { UserService } from '../../shared/service/user.service';
 import { UserStore } from '../../shared/store/user.store';
 import { Router } from '@angular/router';
+import { VehicleTypeService } from '../../shared/service/vehicle-type.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-add',
@@ -30,10 +39,12 @@ export class AddComponent {
   authStore = inject(AuthStore);
   userStore = inject(UserStore);
   router = inject(Router);
+  vehicleTypeService = inject(VehicleTypeService);
 
   isPasswordShow = signal(false);
   file = signal<File | undefined>(undefined);
   isImageSet = false;
+  vehicleTypes = toSignal(this.vehicleTypeService.getAll());
 
   form = this.fb.nonNullable.group({
     email: [
@@ -52,6 +63,8 @@ export class AddComponent {
     photo: [undefined as File | undefined],
     id: ['', [Validators.required, Validators.minLength(6)]],
     phone: ['', Validators.required],
+    vehicle: [1, runnerRequired],
+    plate: ['', runnerRequired],
   });
 
   constructor() {
@@ -59,6 +72,10 @@ export class AddComponent {
       if (this.userStore.status() === 'success') {
         this.router.navigate(['/user']);
       }
+
+      // this.form.valueChanges.subscribe(() => {
+      //   // console.log(this.form);
+      // });
 
       const img = document.getElementById('image') as HTMLImageElement;
       if (this.isPasswordShow()) {
@@ -87,7 +104,6 @@ export class AddComponent {
     const maxSizeInBytes = 5 * 1024 * 1024;
 
     if (file.size > maxSizeInBytes) {
-      console.log('File size is greater than 1MB');
       (document.getElementById('my_modal_2') as HTMLDialogElement).showModal();
       (document.getElementById('fileUpload') as HTMLInputElement).value = '';
     } else {
@@ -105,4 +121,22 @@ export class AddComponent {
 
     this.userStore.addUser(data);
   }
+
+  // required only when type is Runner
+}
+
+function runnerRequired(control: AbstractControl): ValidationErrors | null {
+  const formGroup = control.parent as FormGroup;
+  if (formGroup) {
+    const typeControl = formGroup.get('type');
+    if (typeControl) {
+      typeControl.valueChanges.subscribe(() => {
+        control.updateValueAndValidity();
+      });
+      if (typeControl.value === 'Runner') {
+        return Validators.required(control);
+      }
+    }
+  }
+  return null;
 }

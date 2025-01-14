@@ -35,22 +35,16 @@
       <th class="min-w-64">Full Name</th>
       <th>Email</th>
       <th>Phone No.</th>
-      <th class="w-4"></th>
     </thead>
     <tbody>
-      @for(user of userStore.users(); track user) {
-      <tr>
-        <td>#</td>
+      @for(user of userStore.users(); track user; let i = $index) {
+      <tr class="hover:cursor-pointer hover">
+        <td>{{ i + 1 }}</td>
         <td>{{ user.name }}</td>
         <td>
           <p>{{ user.email }}</p>
         </td>
         <td>{{ user.phone }}</td>
-        <td>
-          <button class="btn btn-ghost btn-sm rounded-md">
-            <i class="bi bi-three-dots"></i>
-          </button>
-        </td>
       </tr>
       }
     </tbody>

@@ -29,50 +29,199 @@
   </div>
 </div>
 <div class="overflow-x-auto w-ful border border-white/15 rounded-md">
-  <table class="table table-pin-cols">
-    <thead>
-      <th class="max-w-4">#</th>
-      <th class="min-w-64">Full Name</th>
-      <th>Phone No.</th>
-      <th>On Duty</th>
-      <th>Status</th>
-    </thead>
-    <tbody>
-      @for(runner of runners(); track runner) {
-      <tr class="hover hover:cursor-pointer">
-        <td>#</td>
-        <td>{{ runner.user.name }}</td>
-        <td>
-          <p>{{ runner.user.phone }}</p>
-        </td>
-        <td>
-          <div
-            class="badge badge-lg"
-            [ngClass]="runner.isOnDuty ? 'badge-success' : 'badge-error'"
-          >
-            {{ runner.isOnDuty ? "Yes" : "No" }}
-          </div>
-        </td>
-        <td>
-          <div
-            class="badge badge-lg"
-            [ngClass]="
-              runner.status === 'Unverified'
-                ? 'badge-warning'
-                : runner.status === 'Verified'
-                ? 'badge-success'
-                : runner.status === 'Rejected'
-                ? 'badge-error'
-                : runner.status === 'Suspended'
-                ? 'badge-error'
-                : 'badge-error'
-            "
-          >
-            {{ runner.status }}
-          </div>
-        </td>
-      </tr>
-      }
-    </tbody>
-  </table>
+  <input id="drawer" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content">
+    <table class="table table-pin-cols">
+      <thead>
+        <th class="max-w-4">#</th>
+        <th class="min-w-64">Full Name</th>
+        <th>Phone No.</th>
+        <th>On Duty</th>
+        <th>Status</th>
+      </thead>
+      <tbody>
+        @for(runner of runners(); track runner.user.id; let i = $index) {
+        <tr
+          class="hover hover:cursor-pointer"
+          (click)="openDrawer(runner.user.id!)"
+        >
+          <td>{{ i + 1 }}</td>
+          <td>{{ runner.user.name }}</td>
+          <td>
+            <p>{{ runner.user.phone }}</p>
+          </td>
+          <td>
+            <div
+              class="badge badge-lg"
+              [ngClass]="runner.isOnDuty ? 'badge-success' : 'badge-error'"
+            >
+              {{ runner.isOnDuty ? "Yes" : "No" }}
+            </div>
+          </td>
+          <td>
+            <div
+              class="badge badge-lg"
+              [ngClass]="
+                runner.status === 'Unverified'
+                  ? 'badge-warning'
+                  : runner.status === 'Verified'
+                  ? 'badge-success'
+                  : runner.status === 'Rejected'
+                  ? 'badge-error'
+                  : runner.status === 'Suspended'
+                  ? 'badge-error'
+                  : 'badge-error'
+              "
+            >
+              {{ runner.status }}
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 </div>
+
+<p-drawer
+  [(visible)]="drawerVisible"
+  position="right"
+  styleClass="!w-full lg:!w-[40rem] !bg-base-100"
+  header="Runner Details"
+>
+  <div>
+    <div class="flex w-full mb-8 mt-2 gap-8">
+      <div class="avatar">
+        <div
+          class="w-40 max-h-40 mx-2 lg:w-52 lg:max-h-52 ring-base-300 ring-offset-base-100 rounded-full ring ring-offset-2"
+        >
+          <img [src]="selectedRunner()?.user?.photo" />
+        </div>
+      </div>
+      <div class="flex flex-col gap-2 w-full">
+        <div class="grid">
+          <p class="font-bold">Full Name</p>
+          <p>{{ selectedRunner()?.user?.name }}</p>
+        </div>
+        <div class="grid">
+          <p class="font-bold">Student / Staff ID</p>
+          <p>{{ selectedRunner()?.user?.id }}</p>
+        </div>
+        <div class="grid">
+          <p class="font-bold">Contact No.</p>
+          <p>{{ selectedRunner()?.user?.phone }}</p>
+        </div>
+        <div class="grid">
+          <p class="font-bold">Email</p>
+          <p>{{ selectedRunner()?.user?.email }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <div class="flex flex-col gap-2">
+        <p class="font-bold">Status</p>
+        <div
+          class="badge badge-lg"
+          [ngClass]="
+            selectedRunner()?.status === 'Unverified'
+              ? 'badge-warning'
+              : selectedRunner()?.status === 'Verified'
+              ? 'badge-success'
+              : selectedRunner()?.status === 'Rejected'
+              ? 'badge-error'
+              : selectedRunner()?.status === 'Suspended'
+              ? 'badge-error'
+              : 'badge-error'
+          "
+        >
+          {{ selectedRunner()?.status }}
+        </div>
+      </div>
+      <div class="flex flex-col gap-2">
+        <p class="font-bold">On Duty</p>
+        <div
+          class="badge badge-lg"
+          [ngClass]="
+            selectedRunner()?.isOnDuty ? 'badge-success' : 'badge-error'
+          "
+        >
+          {{ selectedRunner()?.isOnDuty ? "Yes" : "No" }}
+        </div>
+      </div>
+      @if (selectedRunner()?.status === 'Verified') {
+      <div class="grid">
+        <p class="font-bold">Verified By</p>
+        <p>{{ selectedRunner()?.verifier?.user?.name }}</p>
+      </div>
+      } @if (selectedRunner()?.status === 'Suspended') {
+      <div class="grid">
+        <p class="font-bold">Suspended By</p>
+        <p>{{ selectedRunner()?.verifier?.user?.name }}</p>
+      </div>
+      }
+    </div>
+  </div>
+
+  <div class="flex gap-4 justify-end my-10">
+    @if (selectedRunner()?.status === "Unverified" || selectedRunner()?.status
+    === "Suspended") {
+
+    <button class="btn btn-success" onclick="confirmVerification.showModal()">
+      Verify
+    </button>
+    } @if (selectedRunner()?.status === 'Verified') {
+
+    <button class="btn btn-error" onclick="confirmSuspension.showModal()">
+      Suspend
+    </button>
+    }
+    <!-- <button class="btn btn-primary">Edit</button> -->
+  </div>
+</p-drawer>
+<dialog id="confirmVerification" class="modal">
+  <div class="modal-box">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-6 top-6">
+        ✕
+      </button>
+    </form>
+    <div class="div flex flex-col gap-4 mb-4">
+      <h1 class="text-2xl font-bold">Verify Runner</h1>
+      <p class="text-base">Are you sure you want to verify this runner?</p>
+    </div>
+
+    <form method="dialog" class="flex gap-4 justify-end">
+      <button class="btn btn-error">Cancel</button>
+      <button
+        class="btn btn-success"
+        (click)="verify(selectedRunner()!.user!.id!)"
+      >
+        Verify
+      </button>
+    </form>
+  </div>
+</dialog>
+
+<dialog id="confirmSuspension" class="modal">
+  <div class="modal-box">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-6 top-6">
+        ✕
+      </button>
+    </form>
+    <div class="div flex flex-col gap-4 mb-4">
+      <h1 class="text-2xl font-bold">Suspend Runner</h1>
+      <p class="text-base">Are you sure you want to suspend this runner?</p>
+    </div>
+
+    <form method="dialog" class="flex gap-4 justify-end">
+      <button class="btn btn-error">Cancel</button>
+      <button
+        class="btn btn-success"
+        (click)="suspend(selectedRunner()!.user!.id!)"
+      >
+        Verify
+      </button>
+    </form>
+  </div>
+</dialog>

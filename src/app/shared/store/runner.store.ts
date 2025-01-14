@@ -1,7 +1,13 @@
 import { inject } from '@angular/core';
-import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
+import {
+  signalStore,
+  withState,
+  withMethods,
+  patchState,
+  withHooks,
+} from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { pipe, tap, switchMap } from 'rxjs';
+import { pipe, tap, switchMap, Observable } from 'rxjs';
 import { RunnerService } from '../service/runner.service';
 import { User } from './user.store';
 
@@ -10,7 +16,7 @@ export interface Runner {
   status: 'Unverified' | 'Verified' | 'Rejected' | 'Suspended';
   isOnDuty: boolean;
   vehicle?: Vehicle;
-  verifier?: User;
+  verifier?: { user: User };
 }
 
 export interface Vehicle {
@@ -20,7 +26,7 @@ export interface Vehicle {
 }
 
 export interface VehicleType {
-  id: string;
+  id: number;
   name: string;
   description: string;
 }
@@ -50,5 +56,47 @@ export const RunnerStore = signalStore(
         })
       )
     ),
+    updateStatus: rxMethod<{
+      id: string;
+      verifierId: string;
+      status: 'Unverified' | 'Verified' | 'Rejected' | 'Suspended';
+    }>(
+      pipe(
+        tap(() => {
+          patchState(store, { status: 'loading' });
+        }),
+        switchMap((data) =>
+          runnerService.updateStatus(data.id, data.verifierId, data.status)
+        ),
+        tap((res) => {
+          patchState(store, {
+            status: 'success',
+            runners: store.runners()!.map((runner) => {
+              return runner.user.id === res.user.id ? res : runner;
+            }),
+          });
+        })
+      )
+    ),
+  })),
+  withHooks((store, runnerService = inject(RunnerService)) => ({
+    onInit() {
+      runnerService.changes.subscribe((runner) => {
+        patchState(store, {
+          runners: store.runners()!.map((r) => {
+            console.log(runner);
+            if (r.user.id === runner.id) {
+              return {
+                ...r,
+                isOnDuty: runner.isOnDuty,
+                status: runner.status,
+              };
+            } else {
+              return r;
+            }
+          }),
+        });
+      });
+    },
   }))
 );

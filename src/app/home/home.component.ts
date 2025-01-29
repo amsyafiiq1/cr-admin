@@ -19,7 +19,7 @@ export class HomeComponent {
 
   constructor() {
     this.authService.supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
+      if (event === 'SIGNED_OUT' || session === null) {
         this.router.navigate(['/login']);
       }
     });
